@@ -1,8 +1,9 @@
 pragma solidity ^0.4.23;
 
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import "./identity/ClaimHolder.sol";
 
-contract Identity {
+contract Identity is ClaimHolder{
     address public user ;
     string public name;
     string public fullname;
