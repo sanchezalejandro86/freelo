@@ -26,8 +26,8 @@ contract Task is Ownable {
     /*
     * Modifiers
     */
-    modifier hasNotExpired() {
-        require(now < expiration);
+    modifier hasNotExpired(){
+        require(!isExpired());
         _;
     }
 
@@ -48,6 +48,7 @@ contract Task is Ownable {
     struct BidOffer{
         address user;
         uint256 price;
+        uint256 duration;
         string message;
     }
 
@@ -74,21 +75,25 @@ contract Task is Ownable {
         state = STATE.CLOSED;
     }
 
-    function isActive() onlyOwner public pure returns (bool){
-        return state != STATE.CLOSED && !isClosed();
+    function isActive() public view returns (bool){
+        return state != STATE.CLOSED && !isExpired();
     }
 
-    function addOffer(address _user, uint256 _price, string _message) public{
-        offers[_user] = BidOffer(_user, _price, _message);
+    function isExpired() public view returns (bool){
+        return now < expiration;
+    }
+
+    function addOffer(address _user, uint256 _price, uint256 _duration, string _message) public{
+        offers[_user] = BidOffer(_user, _price, _duration, _message);
     }
 
     function hireUser(address _user) hasNotExpired payable {
-        require(state = STATE.PUBLISHED);
+        require(state == STATE.PUBLISHED);
 
         BidOffer storage offer = offers[_user];
-        require(msg.value = offer.price);
+        require(msg.value == offer.price);
         state = STATE.HIRED;
-        workContract = new WorkContract(this, _user, offer.price);
+        workContract = new WorkContract(this, _user, offer.price, offer.duration);
         workContract.pay.value(msg.value)();
 
         emit TaskHired(workContract);

@@ -13,7 +13,7 @@ contract TaskRegistry is Ownable{
     * Storage
     */
     address[] public tasks;
-    mapping(address => bool) public tasksMap;
+    mapping(address => bool) tasksMap;
 
     /// @dev tasksLength(): Return number of tasks
     function tasksLength()
@@ -21,7 +21,7 @@ contract TaskRegistry is Ownable{
     constant
     returns (uint)
     {
-        return tasks.length();
+        return tasks.length;
     }
 
     /// @dev getTaskAddress(): Return task address
@@ -31,7 +31,7 @@ contract TaskRegistry is Ownable{
     constant
     returns (address)
     {
-        return tasks(_index);
+        return tasks[_index];
     }
 
     /// @dev create(): Create a new task
@@ -45,11 +45,11 @@ contract TaskRegistry is Ownable{
     returns (uint)
     {
         Task newTask = new Task(msg.sender, _ipfsHash, _price);
-        tasks.add(newTask);
+        tasks.push(newTask);
         tasksMap[newTask] = true;
 
-        emit NewTask((tasks.length())-1, address(newTask));
-        return tasks.length();
+        emit NewTask(tasksLength() - 1, address(newTask));
+        return tasks.length;
     }
 
     function isTrustedTask(
@@ -59,6 +59,6 @@ contract TaskRegistry is Ownable{
     view
     returns(bool)
     {
-        return tasksMap(_taskAddress);
+        return tasksMap[_taskAddress];
     }
 }

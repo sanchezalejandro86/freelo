@@ -26,6 +26,7 @@ contract WorkContract {
         AWAITING_PAYMENT, // Buyer hasn't paid full amount yet
         IN_ESCROW, // Payment has been received but not distributed to seller
         CLIENT_PENDING,
+        WORKER_PENDING,
         IN_DISPUTE, // We are in a dispute
         REVIEW_PERIOD, // Time for reviews (only when transaction did not go through)
         COMPLETE // It's all over
@@ -58,13 +59,13 @@ contract WorkContract {
         address _taskContractAddress,
         address _worker,
         uint _price,
-        uint _endDate
+        uint _duration
     ) public{
         taskContract = Task(_taskContractAddress);
         worker = _worker;
         price = _price;
         created = now;
-        endDate = _endDate;
+        endDate = now + _duration;
 
         emit WorkContractChange(internalStage);
     }

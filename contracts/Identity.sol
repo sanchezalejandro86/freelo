@@ -8,7 +8,7 @@ contract Identity {
     string public fullname;
     string public email;
     string public photo; //IPFS hash
-    mapping(string => ERC20) public skills;
+    mapping(string => ERC20) skills;
 
     constructor(
         address _user,
